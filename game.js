@@ -25,6 +25,7 @@ let bgImage, heroImage, monsterImage;
 let startTime = Date.now();
 const SECONDS_PER_ROUND = 30;
 let elapsedTime = 0;
+let score = 0;
 
 function loadImages() {
   bgImage = new Image();
@@ -38,7 +39,7 @@ function loadImages() {
     // show the hero image
     heroReady = true;
   };
-  heroImage.src = "images/hero.png";
+  heroImage.src = "images/Russian Blue.jpg";
 
   monsterImage = new Image();
   monsterImage.onload = function () {
@@ -71,6 +72,7 @@ let monsterY = 100;
  * This is just to let JavaScript know when the user has pressed a key.
 */
 let keysDown = {};
+function getReady (){
 function setupKeyboardListeners() {
   // Check for keys pressed where key represents the keycode captured
   // For now, do not worry too much about what's happening here. 
@@ -90,10 +92,16 @@ function setupKeyboardListeners() {
  *  
  *  If you change the value of 5, the player will move at a different rate.
  */
+let gameOver= true;
 let update = function () {
   // Update the time.
-  elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 
+
+if((SECONDS_PER_ROUND-elapsedTime)<= 0){
+  gameOver=false;
+  return;
+}
+elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 
   if (38 in keysDown) { // Player is holding up key
     heroY -= 5;
@@ -108,6 +116,43 @@ let update = function () {
     heroX += 5;
   }
 
+  if(heroX > canvas.width-32){
+    heroX= 0;
+  }
+  
+  if(heroX < 0){
+    heroX = canvas.width-32;
+  }
+   //
+
+  if(heroY < 0 ){
+    heroY = canvas.height-32;
+  }
+
+  if(heroY > canvas.height-32){
+    heroY = 0;
+  }
+  /////
+  if(monsterX > canvas.width-32){
+    monsterX= 0;
+  }
+  
+  if(monsterX < 0){
+    monsterX = canvas.width-32;
+  }
+   //
+
+  if(monsterY < 0 ){
+    monsterY = canvas.height-32;
+  }
+
+  if(monsterY > canvas.height-32){
+    monsterY = 0;
+  }
+  
+  
+  
+
   // Check if player and monster collided. Our images
   // are about 32 pixels big.
   if (
@@ -118,10 +163,16 @@ let update = function () {
   ) {
     // Pick a new location for the monster.
     // Note: Change this to place the monster at a new, random location.
-    monsterX = monsterX + 50;
-    monsterY = monsterY + 70;
+    monsterX = Math.random()*canvas.width;
+    monsterY = Math.random()*canvas.width;
+    score++;
   }
+  
 };
+
+
+
+
 
 /**
  * This function, render, runs as often as possible.
@@ -136,7 +187,12 @@ var render = function () {
   if (monsterReady) {
     ctx.drawImage(monsterImage, monsterX, monsterY);
   }
+  if((SECONDS_PER_ROUND-elapsedTime) == 0){
+
+    ctx.fillText(`Game Over`, 20, 130);
+  }
   ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
+  ctx.fillText(`Score: ${score}`, 20, 150);
 };
 
 /**
@@ -161,3 +217,8 @@ requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame
 loadImages();
 setupKeyboardListeners();
 main();
+}
+
+function reset() {
+  location.reload();
+}

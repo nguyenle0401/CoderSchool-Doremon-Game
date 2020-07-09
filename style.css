@@ -1,0 +1,33 @@
+.style-b1{
+    margin-top: 10px;
+    border-radius: 12px;
+    width:100px;
+    height: 30px;
+    font-weight: bold;
+    background-color:green;
+    color: white;
+    font-family: monospace;
+}
+
+.style-b1:hover{
+    cursor: pointer;
+    opacity: 0.8;
+    background-color:orange;
+    border-radius: 12px;
+}
+
+.style-b2{
+    margin-top: 18px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    width:300px;
+    height: 70px;
+    font-weight: bold;
+    background-color:yellow;
+}
+.style-b2:hover{
+    cursor: pointer;
+    opacity: 0.8;
+    background-color:red;
+    border-radius: 12px;
+}
