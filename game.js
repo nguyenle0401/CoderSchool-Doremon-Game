@@ -15,18 +15,17 @@ let ctx;
 
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
-canvas.width = 2049;
-canvas.height = 1152;
+canvas.width = 700;
+canvas.height = 500;
 document.body.appendChild(canvas);
 console.log(screen.width)
 console.log(screen.height)
-
 
 let bgReady, heroReady, monsterReady;
 let bgImage, heroImage, monsterImage;
 
 let startTime = Date.now();
-const SECONDS_PER_ROUND = 30;
+const SECONDS_PER_ROUND = 300;
 let elapsedTime = 0;
 let score = 0;
 
@@ -57,21 +56,20 @@ function loadImages() {
     // show the background image
     bgReady = true;
   };
-  bgImage.src = "images/bg.png";
+  bgImage.src = "images/br-p.jpg";
   heroImage = new Image();
   heroImage.onload = function () {
     // show the hero image
     heroReady = true;
   };
-  heroImage.src = "images/siren-bh.png";
+  heroImage.src = "images/dr-st.png";
 
   monsterImage = new Image();
   monsterImage.onload = function () {
     // show the monster image
     monsterReady = true;
   };
-  monsterImage.src = "images/monster.png";
-  monsterImage.src = "images/shiva1.png";
+  monsterImage.src = "images/bran.png";
 
 }
 
@@ -143,20 +141,20 @@ elapsedTime = Math.floor((Date.now() - startTime) / 1000);
   // }
   if (38 in keysDown) { // Player is holding up key
     heroY -= 5;
-    heroImage.src = "images/siren-bh.png";
+    heroImage.src = "images/dr-st.png";
 
   }
   if (40 in keysDown) { // Player is holding down key
     heroY += 5;
-    heroImage.src = "images/siren-fr.png";
+    heroImage.src = "images/dr-1.png";
   }
   if (37 in keysDown) { // Player is holding left key
     heroX -= 5;
-    heroImage.src = "images/siren-l.png";
+    heroImage.src = "images/dr-l.png";
   }
   if (39 in keysDown) { // Player is holding right key
     heroX += 5;
-    heroImage.src = "images/siren-r.png";
+    heroImage.src = "images/dr-r.png";
   }
 
 
@@ -217,7 +215,6 @@ elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 
 
 
-
 /**
  * This function, render, runs as often as possible.
  */
@@ -237,6 +234,7 @@ var render = function () {
   }
   ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
   ctx.fillText(`Score: ${score}`, 20, 150);
+  
 };
 
 /**
@@ -262,6 +260,6 @@ setupKeyboardListeners();
 main();
 }
 
-function reset() {
-  location.reload();
-}
+// function reset() {
+//   location.reload();
+// }
