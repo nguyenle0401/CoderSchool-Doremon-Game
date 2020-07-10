@@ -15,9 +15,12 @@ let ctx;
 
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
-canvas.width = 512;
-canvas.height = 480;
+canvas.width = 2049;
+canvas.height = 1152;
 document.body.appendChild(canvas);
+console.log(screen.width)
+console.log(screen.height)
+
 
 let bgReady, heroReady, monsterReady;
 let bgImage, heroImage, monsterImage;
@@ -27,19 +30,40 @@ const SECONDS_PER_ROUND = 30;
 let elapsedTime = 0;
 let score = 0;
 
+// function loadImages() {
+//   bgImage = new Image();
+//   bgImage.onload = function () {
+//     // show the background image
+//     bgReady = true;
+//   };
+//   bgImage.src = "images/Not Others.jpg";
+//   heroImage = new Image();
+//   heroImage.onload = function () {
+//     // show the hero image
+//     heroReady = true;
+//   };
+//   heroImage.src = "images/s_them_pod.png";
+
+//   monsterImage = new Image();
+//   monsterImage.onload = function () {
+//     // show the monster image
+//     monsterReady = true;
+//   };
+//   monsterImage.src = "images/monster.png";
+// }
 function loadImages() {
   bgImage = new Image();
   bgImage.onload = function () {
     // show the background image
     bgReady = true;
   };
-  bgImage.src = "images/background.png";
+  bgImage.src = "images/bg.png";
   heroImage = new Image();
   heroImage.onload = function () {
     // show the hero image
     heroReady = true;
   };
-  heroImage.src = "images/Russian Blue.jpg";
+  heroImage.src = "images/siren-bh.png";
 
   monsterImage = new Image();
   monsterImage.onload = function () {
@@ -47,6 +71,8 @@ function loadImages() {
     monsterReady = true;
   };
   monsterImage.src = "images/monster.png";
+  monsterImage.src = "images/shiva1.png";
+
 }
 
 /** 
@@ -103,18 +129,36 @@ if((SECONDS_PER_ROUND-elapsedTime)<= 0){
 }
 elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 
+  // if (38 in keysDown) { // Player is holding up key
+  //   heroY -= 5;
+  // }
+  // if (40 in keysDown) { // Player is holding down key
+  //   heroY += 5;
+  // }
+  // if (37 in keysDown) { // Player is holding left key
+  //   heroX -= 5;
+  // }
+  // if (39 in keysDown) { // Player is holding right key
+  //   heroX += 5;
+  // }
   if (38 in keysDown) { // Player is holding up key
     heroY -= 5;
+    heroImage.src = "images/siren-bh.png";
+
   }
   if (40 in keysDown) { // Player is holding down key
     heroY += 5;
+    heroImage.src = "images/siren-fr.png";
   }
   if (37 in keysDown) { // Player is holding left key
     heroX -= 5;
+    heroImage.src = "images/siren-l.png";
   }
   if (39 in keysDown) { // Player is holding right key
     heroX += 5;
+    heroImage.src = "images/siren-r.png";
   }
+
 
   if(heroX > canvas.width-32){
     heroX= 0;
@@ -212,7 +256,6 @@ var main = function () {
 // Safely ignore this line. It's mostly here for people with old web browsers.
 var w = window;
 requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
-
 // Let's play this game!
 loadImages();
 setupKeyboardListeners();
