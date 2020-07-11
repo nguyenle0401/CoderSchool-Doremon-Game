@@ -31,3 +31,25 @@
     background-color:red;
     border-radius: 12px;
 }
+
+.canvasGame {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.maxSize {
+    width: 100%!important;
+    height: 100%!important;
+}
+
+html, body {
+    width: 100%!important;
+    height: 100%!important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden; /*  Disable scrollbars */
+    display: block; 
+}
