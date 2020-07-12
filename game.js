@@ -216,7 +216,7 @@ function getReady() {
   let update = function () {
     if(tt){
       let temp = Date.now()
-      if ((temp - tt) < 15) return;
+      if ((temp - tt) < 10) return;
       tt = temp;
 
     }
