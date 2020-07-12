@@ -43,6 +43,20 @@
 .maxSize {
     width: 100%!important;
     height: 100%!important;
+    min-width: 100%!important;
+    min-height: 100%!important;
+}
+
+.dflex {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.align_center {
+    align-items: center;
 }
 
 html, body {

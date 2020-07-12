@@ -29,22 +29,26 @@ let bgReady, heroReady, monsterReady;
 let bgImage, monImage, cakeImage;
 
 let startTime = Date.now();
-const SECONDS_PER_ROUND = 30;
+const SECONDS_PER_ROUND = 15000;
 let elapsedTime = 0;
 let score = 0;
-let userName = document.getElementById("userName").innerHTML;
-const NUMBER_OBJECTS = 5;
-const NUMBER_MICE = 3;
-const LIVES = 3;
-let SIZE = 60;
-const MON_HEIGHT = 60;
-const MON_WIDTH = 55;
+let userName;
+const NUMBER_OBJECTS = 100;
+const NUMBER_MICE = 25;
+const LIVES = 5;
+const MON_HEIGHT = canvas.height/7;
+const MON_WIDTH = 0.9*MON_HEIGHT;
+const CAKE_SIZE = 60;
+const MOUSE_SIZE = 60
 const RATIO = 20;
-const V1 = 70;
-const V2 = 150;
+const V1 = 100;
+const V2 = 250;
 let currentBran = [];
 let currentMice = [];
 let lives = LIVES;
+let playing = false;
+
+let gameOverParent = document.getElementById("GameOver");
 
 function getTime() {
   var d = new Date();
@@ -59,7 +63,40 @@ function getY(image, v) {
   return Y;
 }
 
+function createElement(tagName, className){
+    let element = document.createElement(tagName);
+    element.className = className.join(" ");
+    return element;
+}
 
+function appendNewElementToBody(tagName, className){
+    let element = createElement(tagName, className);
+    document.body.appendChild(element);
+    return element;
+}
+
+function appendGameOver(){
+  //let coverDiv = appendNewElementToBody("div", ["dflex", "column", "align_center"])
+  let gameOverElem = document.createElement("h1");
+  gameOverElem.innerHTML = "Game Over";
+  gameOverParent.appendChild(gameOverElem);
+}
+
+
+function loadBgImage() {
+  bgImage = new Image();
+  bgImage.onload = function () {
+    // show the background image
+    bgImage.loaded = true;
+  };
+  bgImage.src = "images/br-p.jpg";
+}
+
+function renderBg(){
+    if (bgImage.loaded) {
+      ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+    }
+}
 
 function loadImages() {
   bgImage = new Image();
@@ -73,7 +110,7 @@ function loadImages() {
     // show the hero image
     heroReady = true;
   };
-  monImage.src = "images/dr-st.png";
+  monImage.src = "images/dr-n-st.png";
 
   cakeImage = new Image();
   cakeImage.onload = function () {
@@ -116,6 +153,10 @@ let cakeY = 0;
 */
 let keysDown = {};
 function getReady() {
+  playing = true;
+  userName = document.getElementById("userName").value;
+  document.getElementById("userName").remove();
+  document.getElementById("getReadyBtn").disabled = true;
   function setupKeyboardListeners() {
     // Check for keys pressed where key represents the keycode captured
     // For now, do not worry too much about what's happening here. 
@@ -126,6 +167,8 @@ function getReady() {
     addEventListener("keyup", function (key) {
       delete keysDown[key.keyCode];
     }, false);
+
+
   }
 
 
@@ -147,6 +190,12 @@ function getReady() {
       gameOver = false;
       return;
     }
+    if (lives <= 0){
+      return;
+    }
+    if(!playing){
+      return;
+    }
     elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 
     // if (38 in keysDown) { // Player is holding up key
@@ -163,20 +212,20 @@ function getReady() {
     // }
     if (38 in keysDown) { // Player is holding up key
       //monY -= 5;
-      monImage.src = "images/dr-st.png";
+      monImage.src = "images/dr-n2-l.png";
 
     }
     if (40 in keysDown) { // Player is holding down key
       //monY += 5;
-      monImage.src = "images/dr-1.png";
+      monImage.src = "images/dr-n1.png";
     }
     if (37 in keysDown) { // Player is holding left key
       monX -= 5;
-      monImage.src = "images/dr-l.png";
+      monImage.src = "images/dr-n-st.png";
     }
     if (39 in keysDown) { // Player is holding right key
       monX += 5;
-      monImage.src = "images/dr-r.png";
+      monImage.src = "images/title1.png";
     }
 
 
@@ -193,8 +242,12 @@ function getReady() {
 
 
 
-    function randomX(){
-      return SIZE/2 + Math.random()*(canvas.width-SIZE);
+    function cakeRandomX(){
+      return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
+    }
+
+    function mouseRandomX(){
+      return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
     }
 
     function getV(){
@@ -206,8 +259,8 @@ function getReady() {
       if(currentBran.length < NUMBER_OBJECTS){
           let cakeImg = new Image();
           cakeImg.src = "images/bran.png"
-          cakeImg.toadoY = -SIZE/2;
-          cakeImg.toadoX = randomX();
+          cakeImg.toadoY = -CAKE_SIZE/2;
+          cakeImg.toadoX = cakeRandomX();
           cakeImg.veloc = getV();
           cakeImg.t1 = getTime();
           cakeImg.onload = function(){
@@ -216,8 +269,8 @@ function getReady() {
           currentBran.push(cakeImg)
       }
       currentBran.forEach((bran)=> {
-        if (!((monX -bran.toadoX) > SIZE || (bran.toadoX - monX) > SIZE)
-         && !((monY - bran.toadoY) > SIZE)
+        if (!((monX -bran.toadoX) > CAKE_SIZE || (bran.toadoX - monX) > MON_WIDTH)
+         && !((monY - bran.toadoY) > CAKE_SIZE)
         ){
           score++;
           currentBran.splice(currentBran.indexOf(bran), 1);
@@ -236,8 +289,8 @@ function getReady() {
     if(currentMice.length < NUMBER_MICE){
       let mouseImg = new Image();
       mouseImg.src = "images/mouse.png"
-      mouseImg.toadoY = -SIZE/2;
-      mouseImg.toadoX = randomX();
+      mouseImg.toadoY = -MOUSE_SIZE/2;
+      mouseImg.toadoX = mouseRandomX();
 
       mouseImg.veloc = getV();
       mouseImg.t1 = getTime();
@@ -247,10 +300,14 @@ function getReady() {
       currentMice.push(mouseImg)
   }
   currentMice.forEach((mouse)=> {
-    if (!((monX - mouse.toadoX) > SIZE || (mouse.toadoX - monX) > SIZE)
-     && !((monY - mouse.toadoY) > SIZE)
+    if (!((monX - mouse.toadoX) > MOUSE_SIZE || (mouse.toadoX - monX) > MON_WIDTH)
+     && !((monY - mouse.toadoY) > MOUSE_SIZE)
     ){
       lives--;
+      if (lives === 0){
+          appendGameOver()
+          
+      }
       currentMice.splice(currentMice.indexOf(mouse), 1);
     }
      else if (mouse.toadoY > canvas.height){
@@ -258,7 +315,7 @@ function getReady() {
     }
     else{
       let t2 = getTime()
-      mouse.toadoY = -SIZE/2 + mouse.veloc * (t2 - mouse.t1)
+      mouse.toadoY = -MOUSE_SIZE/2 + mouse.veloc * (t2 - mouse.t1)
     }
   })
 
@@ -298,22 +355,30 @@ function getReady() {
 
     currentBran.forEach((bran) => {
       if(bran.loaded){
-        ctx.drawImage(bran, bran.toadoX, bran.toadoY);
+        ctx.drawImage(bran, bran.toadoX, bran.toadoY, CAKE_SIZE, CAKE_SIZE);
       }
     })
 
     currentMice.forEach((mouse) => {
       if(mouse.loaded){
-        ctx.drawImage(mouse, mouse.toadoX, mouse.toadoY);
+        ctx.drawImage(mouse, mouse.toadoX, mouse.toadoY, MOUSE_SIZE, MOUSE_SIZE);
       }
     })
-    if ((SECONDS_PER_ROUND - elapsedTime) == 0) {
+    if ((SECONDS_PER_ROUND - elapsedTime) < 0) {
 
-      ctx.fillText(`Game Over`, 20, 130);
+      return;
     }
-    ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 100);
-    ctx.fillText(`Score: ${score}`, 20, 150);
-    ctx.fillText(`User Name: ${userName}`, 20, 130);
+
+    if ((SECONDS_PER_ROUND - elapsedTime) === 0) {
+
+      appendGameOver();
+      elapsedTime++;
+    }
+    ctx.fillText(`You have ${lives} lives left`, 20, 175);
+    ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 150);
+    ctx.fillText(`Score: ${score}`, 20, 125);
+    ctx.fillText(`User Name: ${userName}`, 20, 100);
+
   };
 
   /**
@@ -339,6 +404,24 @@ function getReady() {
   main();
 }
 
-// function reset() {
-//   location.reload();
-// }
+function reset() {
+  //location.reload();
+  startTime = Date.now();
+  elapsedTime = 0;
+  score = 0;
+  currentBran = [];
+  currentMice = [];
+  lives = LIVES;
+  playing = false;
+
+  gameOverParent.innerHTML = "";
+  document.getElementById("getReadyBtn").disabled = false;
+  let input = document.createElement("input");
+  input.id = "userName";
+  input.type = "text"
+  input.style.zIndex = 1;
+  document.body.prepend(input);
+}
+
+loadBgImage();
+setTimeout(function(){renderBg();}, 100);
