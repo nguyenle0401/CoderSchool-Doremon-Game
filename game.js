@@ -202,7 +202,7 @@ function getReady() {
     // Create and Update cakes
       if(currentNumber < NUMBER_OBJECTS){
           let cakeImage = new Image();
-          cakeImage.src = "images/bran.png"
+          cakeImage.src = "images/banhran.png"
           cakeImage.y = canvas.height/2;
           function random(){
             return Math.random()*canvas.width;
