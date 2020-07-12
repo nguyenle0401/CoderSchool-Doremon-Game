@@ -35,6 +35,7 @@ const V1 = 10;
 const V2 = 15;
 let currentNumber = 0;
 
+
 function getTime() {
   var d = new Date();
   var n = d.getTime();
