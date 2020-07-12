@@ -5,13 +5,29 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/2.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <title>Best Game Ever!</title>
+    <title>Hunry!</title>
   </head>
   <body>
-    <audio src="audio/drm.mp3"autoplay loop></audio>
-    <input id = "userName"  type="text">
-    <button id="getReadyBtn" class="style-b2" onclick="getReady()">🎉Are you ready?🎉</button>
-    <button class="style-b1" type="button" onclick="reset()">Reset</button>
+
+    <audio src="audio/drm.mp3" loop preload="auto"></audio>
+    
+    <input id = "userName"  type="text" style="z-index: 10!important;" oninput="inputHandle()" placeholder="Enter username to begin">
+    <button id="getReadyBtn" class="style-b2" onclick="getReady()" style="z-index: 10!important;" disabled>🎉Are you ready?🎉</button>
+    <button id="resetBtn" class="style-b1" onclick="reset()" style="z-index: 10!important;" disabled>Reset</button>
+    <div id="GameOver" class="dflex align_center column">
+      <!-- <h1>Game Over</h1> -->
+    </div>
+    <script>
+       function inputHandle(){
+          let value = document.getElementById("userName").value;
+          if (value && (value.length > 0)){
+            document.getElementById("getReadyBtn").disabled = false;
+          }
+          else {
+            document.getElementById("getReadyBtn").disabled = true;
+          }
+       }
+      </script>
     <script src="game.js"></script>
   </body>
 </html>
