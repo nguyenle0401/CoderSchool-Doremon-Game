@@ -23,7 +23,7 @@ console.log(screen.width)
 console.log(screen.height)
 let tt;
 
-let bgReady, heroReady, monsterReady;
+let bgReady, monReady, monsterReady;
 let bgImage, monImage, cakeImage;
 
 let startTime = Date.now();
@@ -138,7 +138,7 @@ function loadImages() {
   monImage = new Image();
   monImage.onload = function () {
     // show the hero image
-    heroReady = true;
+    monReady = true;
   };
   monImage.src = "images/dr-n-st.png";
 
@@ -148,13 +148,6 @@ function loadImages() {
     monsterReady = true;
   };
   cakeImage.src = "images/bran.png";
-
-  cake2Image = new Image();
-  cake2Image.onload = function () {
-    // show the monster image
-    monsterReady = true;
-  };
-  cake2Image.src = "images/bran.png";
 
 }
 
@@ -182,207 +175,174 @@ let cakeY = 0;
  * This is just to let JavaScript know when the user has pressed a key.
 */
 let keysDown = {};
-function getReady() {
-  playing = true;
-  audio.play();
-  userName = document.getElementById("userName").value;
-  document.getElementById("userName").remove();
-  document.getElementById("getReadyBtn").disabled = true;
-  function setupKeyboardListeners() {
-    // Check for keys pressed where key represents the keycode captured
-    // For now, do not worry too much about what's happening here. 
-    addEventListener("keydown", function (key) {
-      keysDown[key.keyCode] = true;
-    }, false);
 
-    addEventListener("keyup", function (key) {
-      delete keysDown[key.keyCode];
-    }, false);
+let update = function () {
+  if(tt){
+    let temp = Date.now()
+    if ((temp - tt) < 10) return;
+    tt = temp;
+
+  }
+  else {
+    tt = Date.now();
+  }
+  // Update the time.
 
 
+  if ((SECONDS_PER_ROUND - elapsedTime) <= 0) {
+    gameOver = false;
+    return;
+  }
+  if (lives <= 0){
+    return;
+  }
+  if(!playing){
+    return;
+  }
+  elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+
+  // if (38 in keysDown) { // Player is holding up key
+  //   monY -= 5;
+  // }
+  // if (40 in keysDown) { // Player is holding down key
+  //   monY += 5;
+  // }
+  // if (37 in keysDown) { // Player is holding left key
+  //   monX -= 5;
+  // }
+  // if (39 in keysDown) { // Player is holding right key
+  //   monX += 5;
+  // }
+  if (38 in keysDown) { // Player is holding up key
+    //monY -= 5;
+    monImage.src = "images/dr-n2-l.png";
+
+  }
+  if (40 in keysDown) { // Player is holding down key
+    //monY += 5;
+    monImage.src = "images/dr-n1.png";
+  }
+  if (37 in keysDown) { // Player is holding left key
+    monX -= 5;
+    monImage.src = "images/dr-n-st.png";
+  }
+  if (39 in keysDown) { // Player is holding right key
+    monX += 5;
+    monImage.src = "images/title1.png";
   }
 
 
-
-
-
-  /**
-   *  Update game objects - change player position based on key pressed
-   *  and check to see if the monster has been caught!
-   *  
-   *  If you change the value of 5, the player will move at a different rate.
-   */
-  let gameOver = true;
-  let update = function () {
-    if(tt){
-      let temp = Date.now()
-      if ((temp - tt) < 10) return;
-      tt = temp;
-
-    }
-    else {
-      tt = Date.now();
-    }
-    // Update the time.
-
-
-    if ((SECONDS_PER_ROUND - elapsedTime) <= 0) {
-      gameOver = false;
-      return;
-    }
-    if (lives <= 0){
-      return;
-    }
-    if(!playing){
-      return;
-    }
-    elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-
-    // if (38 in keysDown) { // Player is holding up key
-    //   monY -= 5;
-    // }
-    // if (40 in keysDown) { // Player is holding down key
-    //   monY += 5;
-    // }
-    // if (37 in keysDown) { // Player is holding left key
-    //   monX -= 5;
-    // }
-    // if (39 in keysDown) { // Player is holding right key
-    //   monX += 5;
-    // }
-    if (38 in keysDown) { // Player is holding up key
-      //monY -= 5;
-      monImage.src = "images/dr-n2-l.png";
-
-    }
-    if (40 in keysDown) { // Player is holding down key
-      //monY += 5;
-      monImage.src = "images/dr-n1.png";
-    }
-    if (37 in keysDown) { // Player is holding left key
-      monX -= 5;
-      monImage.src = "images/dr-n-st.png";
-    }
-    if (39 in keysDown) { // Player is holding right key
-      monX += 5;
-      monImage.src = "images/title1.png";
-    }
-
-
-    if (monX > canvas.width - MON_WIDTH/2) {
-      monX = 0;
-    }
-
-    if (monX < 0) {
-      monX = canvas.width - MON_WIDTH/2;
-    }
-    //
-
-    monY = canvas.height - MON_HEIGHT;
-
-
-
-    function cakeRandomX(){
-      return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
-    }
-
-    function mouseRandomX(){
-      return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
-    }
-
-    function getV(){
-      return V1+(V2-V1)*Math.random();
-    }
-
-
-    // Create and Update cakes
-      if(currentBran.length < NUMBER_OBJECTS){
-          let cakeImg = new Image();
-          cakeImg.src = "images/bran.png"
-          cakeImg.toadoY = -CAKE_SIZE/2;
-          cakeImg.toadoX = cakeRandomX();
-          cakeImg.veloc = getV();
-          cakeImg.t1 = getTime();
-          cakeImg.onload = function(){
-            cakeImg.loaded = true;
-          }
-          currentBran.push(cakeImg)
-      }
-      currentBran.forEach((bran)=> {
-        if (!((monX -bran.toadoX) > CAKE_SIZE || (bran.toadoX - monX) > MON_WIDTH)
-         && !((monY - bran.toadoY) > CAKE_SIZE)
-        ){
-          score++;
-          currentBran.splice(currentBran.indexOf(bran), 1);
-        } 
-        else if (bran.toadoY > canvas.height){
-          currentBran.splice(currentBran.indexOf(bran), 1);
-        }
-        else{
-          let t2 = getTime()
-          bran.toadoY = -CAKE_SIZE/2 + bran.veloc * (t2 - bran.t1)
-        }
-      })
-
-      
-    // Create and Update Mice
-    if(currentMice.length < NUMBER_MICE){
-      let mouseImg = new Image();
-      mouseImg.src = "images/mouse.png"
-      mouseImg.toadoY = -MOUSE_SIZE/2;
-      mouseImg.toadoX = mouseRandomX();
-
-      mouseImg.veloc = getV();
-      mouseImg.t1 = getTime();
-      mouseImg.onload = function(){
-        mouseImg.loaded = true;
-      }
-      currentMice.push(mouseImg)
+  if (monX > canvas.width - MON_WIDTH/2) {
+    monX = 0;
   }
-  currentMice.forEach((mouse)=> {
-    if (!((monX - mouse.toadoX) > MOUSE_SIZE || (mouse.toadoX - monX) > MON_WIDTH)
-     && !((monY - mouse.toadoY) > MOUSE_SIZE)
-    ){
-      lives--;
-      if (lives === 0){
-          appendGameOver();
-          document.getElementById("resetBtn").disabled = false;
-          addUserHistory();
-          
+
+  if (monX < 0) {
+    monX = canvas.width - MON_WIDTH/2;
+  }
+  //
+
+  monY = canvas.height - MON_HEIGHT;
+
+
+
+  function cakeRandomX(){
+    return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
+  }
+
+  function mouseRandomX(){
+    return CAKE_SIZE/2 + Math.random()*(canvas.width-CAKE_SIZE);
+  }
+
+  function getV(){
+    return V1+(V2-V1)*Math.random();
+  }
+
+
+  // Create and Update cakes
+    if(currentBran.length < NUMBER_OBJECTS){
+        let cakeImg = new Image();
+        cakeImg.src = "images/bran.png"
+        cakeImg.toadoY = -CAKE_SIZE/2;
+        cakeImg.toadoX = cakeRandomX();
+        cakeImg.veloc = getV();
+        cakeImg.t1 = getTime();
+        cakeImg.onload = function(){
+          cakeImg.loaded = true;
+        }
+        currentBran.push(cakeImg)
+    }
+    currentBran.forEach((bran)=> {
+      if (!((monX -bran.toadoX) > CAKE_SIZE || (bran.toadoX - monX) > MON_WIDTH)
+       && !((monY - bran.toadoY) > CAKE_SIZE)
+      ){
+        score++;
+        currentBran.splice(currentBran.indexOf(bran), 1);
+      } 
+      else if (bran.toadoY > canvas.height){
+        currentBran.splice(currentBran.indexOf(bran), 1);
       }
-      currentMice.splice(currentMice.indexOf(mouse), 1);
+      else{
+        let t2 = getTime()
+        bran.toadoY = -CAKE_SIZE/2 + bran.veloc * (t2 - bran.t1)
+      }
+    })
+
+    
+  // Create and Update Mice
+  if(currentMice.length < NUMBER_MICE){
+    let mouseImg = new Image();
+    mouseImg.src = "images/mouse.png"
+    mouseImg.toadoY = -MOUSE_SIZE/2;
+    mouseImg.toadoX = mouseRandomX();
+
+    mouseImg.veloc = getV();
+    mouseImg.t1 = getTime();
+    mouseImg.onload = function(){
+      mouseImg.loaded = true;
     }
-     else if (mouse.toadoY > canvas.height){
-      currentMice.splice(currentMice.indexOf(mouse), 1);
+    currentMice.push(mouseImg)
+}
+currentMice.forEach((mouse)=> {
+  if (!((monX - mouse.toadoX) > MOUSE_SIZE || (mouse.toadoX - monX) > MON_WIDTH)
+   && !((monY - mouse.toadoY) > MOUSE_SIZE)
+  ){
+    lives--;
+    if (lives === 0){
+        appendGameOver();
+        document.getElementById("resetBtn").disabled = false;
+        addUserHistory();
+        
     }
-    else{
-      let t2 = getTime()
-      mouse.toadoY = -MOUSE_SIZE/2 + mouse.veloc * (t2 - mouse.t1)
-    }
-  })
+    currentMice.splice(currentMice.indexOf(mouse), 1);
+  }
+   else if (mouse.toadoY > canvas.height){
+    currentMice.splice(currentMice.indexOf(mouse), 1);
+  }
+  else{
+    let t2 = getTime()
+    mouse.toadoY = -MOUSE_SIZE/2 + mouse.veloc * (t2 - mouse.t1)
+  }
+})
 
 
 
 
-    // Check if player and monster collided. Our images
-    // are about 32 pixels big.
-    // if (
-    //   monX <= (cakeX + 32)
-    //   && cakeX <= (monX + 32)
-    //   && monY <= (cakeY + 32)
-    //   && cakeY <= (monY + 32)
-    // ) {
-    //   // Pick a new location for the monster.
-    //   // Note: Change this to place the monster at a new, random location.
-    //   cakeX = Math.random() * canvas.width;
-    //   cakeY = Math.random() * canvas.width;
-    //   score++;
-    // }
+  // Check if player and monster collided. Our images
+  // are about 32 pixels big.
+  // if (
+  //   monX <= (cakeX + 32)
+  //   && cakeX <= (monX + 32)
+  //   && monY <= (cakeY + 32)
+  //   && cakeY <= (monY + 32)
+  // ) {
+  //   // Pick a new location for the monster.
+  //   // Note: Change this to place the monster at a new, random location.
+  //   cakeX = Math.random() * canvas.width;
+  //   cakeY = Math.random() * canvas.width;
+  //   score++;
+  // }
 
-  };
-
-
-
+};
 
   /**
    * This function, render, runs as often as possible.
@@ -391,7 +351,7 @@ function getReady() {
     if (bgReady) {
       ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
     }
-    if (heroReady) {
+    if (monReady) {
       ctx.drawImage(monImage, monX, monY, MON_WIDTH, MON_HEIGHT);
     }
 
@@ -430,12 +390,8 @@ function getReady() {
     history[2] && ctx.fillText(`${history[2].name}: ${history[2].score}`, 30, 275);
   };
 
-  /**
-   * The main game loop. Most every game will have two distinct parts:
-   * update (updates the state of the game, in this case our hero and monster)
-   * render (based on the state of our game, draw the right things)
-   */
-  var main = function () {
+let gameOver = true;
+var main = function () {
     update();
     render();
     // Request to do this again ASAP. This is a special method
@@ -445,14 +401,52 @@ function getReady() {
     else requestAnimationFrame(main);
   };
 
+function setupKeyboardListeners() {
+    // Check for keys pressed where key represents the keycode captured
+    // For now, do not worry too much about what's happening here. 
+    addEventListener("keydown", function (key) {
+      keysDown[key.keyCode] = true;
+    }, false);
+
+    addEventListener("keyup", function (key) {
+      delete keysDown[key.keyCode];
+    }, false);
+
+
+}
+
+function getReady() {
+  playing = true;
+  audio.play();
+  userName = document.getElementById("userName").value;
+  document.getElementById("userName").remove();
+  document.getElementById("getReadyBtn").disabled = true;
+
+
+
+
+
+
+  /**
+   *  Update game objects - change player position based on key pressed
+   *  and check to see if the monster has been caught!
+   *  
+   *  If you change the value of 5, the player will move at a different rate.
+   */
+
+  
+
+
+  /**
+   * The main game loop. Most every game will have two distinct parts:
+   * update (updates the state of the game, in this case our hero and monster)
+   * render (based on the state of our game, draw the right things)
+   */
+
+
   // Cross-browser support for requestAnimationFrame.
   // Safely ignore this line. It's mostly here for people with old web browsers.
-  var w = window;
-  requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
-  // Let's play this game!
-  loadImages();
-  setupKeyboardListeners();
-  main();
+
 }
 
 function reset() {
@@ -484,5 +478,12 @@ function reset() {
   document.getElementById("resetBtn").disabled = true;
 }
 
-loadBgImage();
-setTimeout(function(){renderBg();}, 100);
+// loadBgImage();
+// setTimeout(function(){renderBg();}, 100);
+
+var w = window;
+requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+// Let's play this game!
+loadImages();
+setupKeyboardListeners();
+main();
