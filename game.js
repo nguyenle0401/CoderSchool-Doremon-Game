@@ -381,16 +381,16 @@ currentMice.forEach((mouse)=> {
   
     }
     
-    ctx.font = "20px Georgia";
+    ctx.font = "18px Georgia";
     ctx.fillText(`You have ${lives} lives left`, 20, 175);
     ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 150);
     ctx.fillText(`Score: ${score}`, 20, 125);
     ctx.fillText(`User Name: ${userName}`, 20, 100);
     history.sort(compareObjR);
-    ctx.fillText(`History:`, 20, 200);
-    history[0] && ctx.fillText(`${history[0].name}: ${history[0].score}`, 30, 225);
-    history[1] && ctx.fillText(`${history[1].name}: ${history[1].score}`, 30, 250);
-    history[2] && ctx.fillText(`${history[2].name}: ${history[2].score}`, 30, 275);
+    ctx.fillText(`Top Score:`, 20, 200);
+    history[0] && ctx.fillText(`${history[0].name}: ${history[0].score}`, 30, 230);
+    history[1] && ctx.fillText(`${history[1].name}: ${history[1].score}`, 30, 260);
+    history[2] && ctx.fillText(`${history[2].name}: ${history[2].score}`, 30, 290);
   };
 
 let gameOver = true;
