@@ -378,7 +378,10 @@ currentMice.forEach((mouse)=> {
       document.getElementById("resetBtn").disabled = false;
       
       elapsedTime++;
+  
     }
+    
+    ctx.font = "20px Georgia";
     ctx.fillText(`You have ${lives} lives left`, 20, 175);
     ctx.fillText(`Seconds Remaining: ${SECONDS_PER_ROUND - elapsedTime}`, 20, 150);
     ctx.fillText(`Score: ${score}`, 20, 125);
